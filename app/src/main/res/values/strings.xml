@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Edge Detection Viewer</string>
+    <string name="camera_permission_required">Camera permission is required</string>
+    <string name="camera_error">Camera error occurred</string>
+    <string name="opencv_init_error">OpenCV initialization failed</string>
+    <string name="processing_fps">FPS: %1$d</string>
+    <string name="processing_time">%1$dms</string>
+    <string name="toggle_raw">Raw Feed</string>
+    <string name="toggle_processed">Edge Detection</string>
+    <string name="status_initializing">Initializing...</string>
+    <string name="status_camera_ready">Camera Ready</string>
+    <string name="status_processing">Processing</string>
+    <string name="status_error">Error</string>
+</resources>
