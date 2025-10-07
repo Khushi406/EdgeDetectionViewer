@@ -46,6 +46,9 @@ class MainActivity : AppCompatActivity() {
         initializeViews()
         setupClickListeners()
         
+        // Initialize native OpenCV
+        initializeOpenCV()
+        
         if (checkCameraPermission()) {
             setupCamera()
         } else {
@@ -211,9 +214,26 @@ class MainActivity : AppCompatActivity() {
     }
     
     private fun processFrame(image: android.media.Image) {
-        // TODO: Convert image to byte array and pass to native code
-        // For now, just log that we're processing
-        Log.d(TAG, "Processing frame: ${image.width}x${image.height}")
+        try {
+            // Convert YUV_420_888 to byte array (simplified conversion)
+            val planes = image.planes
+            val yPlane = planes[0]
+            val yBuffer = yPlane.buffer
+            val ySize = yBuffer.remaining()
+            val yBytes = ByteArray(ySize)
+            yBuffer.get(yBytes)
+            
+            if (isProcessingEnabled) {
+                // Process with native OpenCV function
+                val processedData = processImageWithOpenCV(yBytes, image.width, image.height)
+                
+                // TODO: Display processed data in OpenGL surface
+                Log.d(TAG, "Processed frame: ${image.width}x${image.height}, output size: ${processedData.size}")
+            }
+            
+        } catch (e: Exception) {
+            Log.e(TAG, "Error processing frame", e)
+        }
     }
     
     private fun updateFpsCounter() {
@@ -282,6 +302,9 @@ class MainActivity : AppCompatActivity() {
     
     // Native method for OpenCV processing (will implement in native-lib.cpp)
     external fun processImageWithOpenCV(data: ByteArray, width: Int, height: Int): ByteArray
+    
+    // Native method to initialize OpenCV
+    external fun initializeOpenCV(): Boolean
     
     companion object {
         init {
