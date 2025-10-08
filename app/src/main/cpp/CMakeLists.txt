@@ -12,10 +12,10 @@ cmake_minimum_required(VERSION 3.22.1)
 project("edgedetection")
 
 # Set OpenCV path - adjust this path based on your OpenCV installation
-set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/../../../opencv/sdk/native/jni)
+# set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/../../../opencv/sdk/native/jni)
 
 # Find OpenCV package
-find_package(OpenCV REQUIRED)
+# find_package(OpenCV REQUIRED)
 
 # Creates and names a library, sets it as either STATIC
 # or SHARED, and provides the relative paths to its source code.
@@ -41,4 +41,5 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
         # List libraries link to the target library
         android
         log
-        ${OpenCV_LIBS})
+        # ${OpenCV_LIBS}
+        )

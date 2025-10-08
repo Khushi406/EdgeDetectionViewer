@@ -1,8 +1,8 @@
 #include <jni.h>
 #include <string>
 #include <android/log.h>
-#include <opencv2/opencv.hpp>
-#include <opencv2/imgproc.hpp>
+// #include <opencv2/opencv.hpp>
+// #include <opencv2/imgproc.hpp>
 
 #define LOG_TAG "EdgeDetectionViewer"
 #define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
@@ -36,31 +36,11 @@ Java_com_flam_edgedetection_MainActivity_processImageWithOpenCV(
     }
     
     try {
-        // Create OpenCV Mat from input data (assuming NV21 format from camera)
-        cv::Mat yuvImage(height + height/2, width, CV_8UC1, (unsigned char*)inputData);
-        cv::Mat rgbImage;
-        cv::Mat grayImage;
-        cv::Mat blurredImage;
-        cv::Mat edgesImage;
+        // Simple placeholder processing (grayscale edge effect)
+        // TODO: Replace with OpenCV when SDK is integrated
         
-        // Convert YUV to RGB
-        cv::cvtColor(yuvImage, rgbImage, cv::COLOR_YUV2RGB_NV21);
-        
-        // Convert to grayscale for edge detection
-        cv::cvtColor(rgbImage, grayImage, cv::COLOR_RGB2GRAY);
-        
-        // Apply Gaussian blur to reduce noise
-        cv::GaussianBlur(grayImage, blurredImage, cv::Size(5, 5), 0);
-        
-        // Apply Canny edge detection
-        cv::Canny(blurredImage, edgesImage, 50, 150);
-        
-        // Convert edges back to RGB for display
-        cv::Mat outputRgb;
-        cv::cvtColor(edgesImage, outputRgb, cv::COLOR_GRAY2RGB);
-        
-        // Calculate output size
-        int outputSize = outputRgb.rows * outputRgb.cols * 3;
+        // Calculate output size (RGB format)
+        int outputSize = width * height * 3;
         jbyteArray outputArray = env->NewByteArray(outputSize);
         
         if (outputArray == nullptr) {
@@ -69,7 +49,6 @@ Java_com_flam_edgedetection_MainActivity_processImageWithOpenCV(
             return nullptr;
         }
         
-        // Copy processed data to output array
         jbyte* outputData = env->GetByteArrayElements(outputArray, nullptr);
         if (outputData == nullptr) {
             LOGE("Failed to get output array elements");
@@ -77,17 +56,26 @@ Java_com_flam_edgedetection_MainActivity_processImageWithOpenCV(
             return nullptr;
         }
         
-        memcpy(outputData, outputRgb.data, outputSize);
+        // Simple processing: Create edge-like effect
+        for (int i = 0; i < width * height; i++) {
+            unsigned char pixel = (unsigned char)(inputData[i] & 0xFF);
+            unsigned char processed = (pixel > 128) ? 255 : 0;
+            
+            // Set RGB values (grayscale edge effect)
+            outputData[i * 3] = processed;     // R
+            outputData[i * 3 + 1] = processed; // G
+            outputData[i * 3 + 2] = processed; // B
+        }
         
         // Clean up
         env->ReleaseByteArrayElements(inputArray, inputData, JNI_ABORT);
         env->ReleaseByteArrayElements(outputArray, outputData, 0);
         
-        LOGD("OpenCV Canny edge detection completed successfully");
+        LOGD("Simple edge processing completed successfully");
         return outputArray;
         
-    } catch (cv::Exception& e) {
-        LOGE("OpenCV Exception: %s", e.what());
+    } catch (std::exception& e) {
+        LOGE("Processing Exception: %s", e.what());
         env->ReleaseByteArrayElements(inputArray, inputData, JNI_ABORT);
         return nullptr;
     }
@@ -98,15 +86,14 @@ Java_com_flam_edgedetection_MainActivity_initializeOpenCV(
         JNIEnv* env,
         jobject /* this */) {
     
-    LOGD("Initializing OpenCV...");
+    LOGD("Initializing native library...");
     
     try {
-        // Test OpenCV functionality
-        cv::Mat testMat = cv::Mat::zeros(100, 100, CV_8UC3);
-        LOGD("OpenCV initialized successfully - Version: %s", CV_VERSION);
+        // Placeholder initialization - ready for OpenCV integration
+        LOGD("Native library initialized successfully - Ready for OpenCV");
         return JNI_TRUE;
-    } catch (cv::Exception& e) {
-        LOGE("OpenCV initialization failed: %s", e.what());
+    } catch (std::exception& e) {
+        LOGE("Native library initialization failed: %s", e.what());
         return JNI_FALSE;
     }
 }
