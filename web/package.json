@@ -1,0 +1,17 @@
+{
+  "name": "edge-detection-web-viewer",
+  "version": "1.0.0",
+  "description": "TypeScript Web Viewer for Edge Detection Frames",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "serve": "python -m http.server 8080 --directory dist",
+    "start": "npm run build && npm run serve"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "author": "Khushi - FLAM R&D Assessment",
+  "license": "MIT"
+}
